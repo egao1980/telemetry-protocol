@@ -11,6 +11,7 @@
 
 (defun use-recording-telemetry ()
   (setf *telemetry-backend* (make-recording-telemetry-backend)
+        *tracer-provider* nil
         *current-span* nil
         *current-trace-id* nil)
   *telemetry-backend*)
@@ -28,10 +29,15 @@
              (not (find span (recorded-spans backend))))
     (push span (recorded-spans backend))))
 
-(defmethod record-metric ((backend recording-telemetry-backend) name value
-                          &key attributes unit)
-  (let ((m (make-telemetry-metric :name (if (stringp name) name (string name))
-                                  :value value :unit unit
-                                  :attributes attributes)))
+(defmethod record-instrument ((backend recording-telemetry-backend) instrument value
+                              &key attributes)
+  (let ((m (make-telemetry-metric
+            :name (telemetry-instrument-name instrument)
+            :value value
+            :unit (telemetry-instrument-unit instrument)
+            :attributes attributes
+            :kind (telemetry-instrument-kind instrument)
+            :boundaries (and (histogram-p instrument)
+                             (histogram-boundaries instrument)))))
     (push m (recorded-metrics backend))
     m))

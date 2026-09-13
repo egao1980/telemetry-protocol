@@ -90,12 +90,64 @@
    (value :initarg :value :accessor telemetry-metric-value)
    (unit :initarg :unit :accessor telemetry-metric-unit :initform nil)
    (attributes :initarg :attributes :accessor telemetry-metric-attributes
+               :initform nil)
+   (kind :initarg :kind :accessor telemetry-metric-kind :initform nil)
+   (boundaries :initarg :boundaries :accessor telemetry-metric-boundaries
                :initform nil)))
 
-(defun make-telemetry-metric (&key name value unit attributes)
+(defun make-telemetry-metric (&key name value unit attributes kind boundaries)
   (make-instance 'telemetry-metric
                  :name name :value value :unit unit
-                 :attributes (copy-list attributes)))
+                 :attributes (copy-list attributes)
+                 :kind kind
+                 :boundaries (copy-list boundaries)))
 
 (defun telemetry-metric-p (x)
   (typep x 'telemetry-metric))
+
+;;; Tracer provider + metrics instruments (no views / aggregation).
+
+(defclass tracer-provider ()
+  ((instruments :initform (make-hash-table :test 'equal)
+                :accessor tracer-provider-instruments)
+   (redaction-policy :initarg :redaction-policy
+                     :initform nil
+                     :accessor tracer-provider-redaction-policy))
+  (:documentation "Instrument registry. TELEMETRY-BACKEND is a provider."))
+
+(defun tracer-provider-p (x)
+  (typep x 'tracer-provider))
+
+(defclass telemetry-instrument ()
+  ((name :initarg :name :accessor telemetry-instrument-name)
+   (kind :initarg :kind :accessor telemetry-instrument-kind)
+   (unit :initarg :unit :accessor telemetry-instrument-unit :initform nil)
+   (description :initarg :description :accessor telemetry-instrument-description
+                :initform nil)
+   (provider :initarg :provider :accessor telemetry-instrument-provider
+             :initform nil)))
+
+(defun telemetry-instrument-p (x)
+  (typep x 'telemetry-instrument))
+
+(defclass counter (telemetry-instrument) ())
+
+(defun counter-p (x)
+  (typep x 'counter))
+
+(defclass up-down-counter (telemetry-instrument) ())
+
+(defun up-down-counter-p (x)
+  (typep x 'up-down-counter))
+
+(defclass gauge (telemetry-instrument) ())
+
+(defun gauge-p (x)
+  (typep x 'gauge))
+
+(defclass histogram (telemetry-instrument)
+  ((boundaries :initarg :boundaries :accessor histogram-boundaries
+               :initform nil)))
+
+(defun histogram-p (x)
+  (typep x 'histogram))

@@ -15,9 +15,17 @@
    #:recorded-metrics
    #:clear-telemetry
 
+   #:tracer-provider
+   #:tracer-provider-p
+   #:tracer-provider-instruments
+   #:tracer-provider-redaction-policy
+   #:*tracer-provider*
+   #:current-tracer-provider
+
    #:*telemetry-backend*
    #:*current-span*
    #:*current-trace-id*
+   #:*redaction-policy*
 
    #:telemetry-span
    #:make-telemetry-span
@@ -52,6 +60,34 @@
    #:telemetry-metric-value
    #:telemetry-metric-unit
    #:telemetry-metric-attributes
+   #:telemetry-metric-kind
+   #:telemetry-metric-boundaries
+
+   #:telemetry-instrument
+   #:telemetry-instrument-p
+   #:telemetry-instrument-name
+   #:telemetry-instrument-kind
+   #:telemetry-instrument-unit
+   #:telemetry-instrument-description
+   #:telemetry-instrument-provider
+   #:counter
+   #:counter-p
+   #:up-down-counter
+   #:up-down-counter-p
+   #:gauge
+   #:gauge-p
+   #:histogram
+   #:histogram-p
+   #:histogram-boundaries
+   #:get-instrument
+   #:record
+   #:record-instrument
+
+   #:redaction-policy
+   #:redaction-policy-p
+   #:redaction-policy-patterns
+   #:make-default-redaction-policy
+   #:redact-attributes
 
    #:start-span
    #:end-span
@@ -66,6 +102,7 @@
    #:with-span
    #:use-recording-telemetry
    #:use-noop-telemetry
+   #:instrument-gen-ai-span
 
    #:+gen-ai-operation-name+
    #:+gen-ai-request-model+

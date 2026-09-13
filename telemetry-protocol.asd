@@ -1,6 +1,6 @@
 (defsystem "telemetry-protocol"
-  :version "0.1.0"
-  :description "CLOS telemetry protocol (traces/spans + thin metrics) for cl-stack"
+  :version "0.2.0"
+  :description "CLOS telemetry protocol (traces/spans + metrics instruments) for cl-stack"
   :author "egao1980"
   :license "MIT"
   :depends-on ()
